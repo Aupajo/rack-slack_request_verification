@@ -16,8 +16,8 @@ module Rack::SlackRequestVerification
       request = Request.new(env, config)
 
       if path_pattern.match?(request.path)
-        if request.missing_headers?
-          logger.error "Slack verification failed: missing #{request.missing_headers.join(', ')}"
+        if request.headers.missing?
+          logger.error "Slack verification failed: missing #{request.headers.missing.join(', ')}"
           return [401, {}, "Not authorized"]
         end
 

@@ -2,7 +2,7 @@ module Rack::SlackRequestVerification
   class Request
     extend Forwardable
     attr_reader :env, :config
-    def_delegators :config, :signature_header, :timestamp_header
+    def_delegators :headers, :signed_signature, :timestamp
 
     def initialize(env, config)
       @env = env
@@ -14,34 +14,15 @@ module Rack::SlackRequestVerification
     end
 
     def headers
-      headers = {
-        signature_header => env["HTTP_" + signature_header.gsub('-', '_').upcase],
-        timestamp_header => env["HTTP_" + timestamp_header.gsub('-', '_').upcase]&.to_i
-      }
-    end
-
-    def missing_headers
-      headers.select { |_, value| value.nil? }.keys
-    end
-
-    def missing_headers?
-      !missing_headers.empty?
+      @headers ||= Headers.new(self)
     end
 
     def body
       @body ||= read_body!
     end
 
-    def signed_signature
-      headers.fetch(signature_header)
-    end
-
-    def timestamp
-      headers.fetch(timestamp_header)
-    end
-
     def computed_signature
-      ComputedSignature.new(self)
+      @computed_signature ||= ComputedSignature.new(self)
     end
 
     private
