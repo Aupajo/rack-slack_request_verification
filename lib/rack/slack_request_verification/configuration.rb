@@ -1,3 +1,5 @@
+require 'logger'
+
 module Rack::SlackRequestVerification
   class Configuration
     attr_reader *%i(
@@ -41,6 +43,10 @@ module Rack::SlackRequestVerification
       @signing_key = signing_key || ENV.fetch(signing_key_env_var) do
         fail Error, "#{signing_key_env_var} env var not set, please configure a signing key"
       end
+    end
+
+    def minimum_timestamp
+      Time.now.to_i - max_staleness_in_secs
     end
   end
 end
