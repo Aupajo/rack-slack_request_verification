@@ -10,6 +10,7 @@ module Rack::SlackRequestVerification
       signature_header
       logger
       max_staleness_in_secs
+      request_body_limit_in_bytes
     )
 
     def initialize(
@@ -26,6 +27,10 @@ module Rack::SlackRequestVerification
       # process each request once
       max_staleness_in_secs: 60 * 5,
 
+      # The entire request body must be loaded into memory to compute the hash.
+      # To prevent a DDoS attack, the request body is limited to 1MB
+      request_body_limit_in_bytes: 1024 ** 2,
+
       # Where to log error messages
       logger: Logger.new($stdout),
 
@@ -39,6 +44,7 @@ module Rack::SlackRequestVerification
       @signature_header = signature_header
       @logger = logger
       @max_staleness_in_secs = max_staleness_in_secs
+      @request_body_limit_in_bytes = request_body_limit_in_bytes
 
       @signing_key = signing_key || ENV.fetch(signing_key_env_var) do
         fail Error, "#{signing_key_env_var} env var not set, please configure a signing key"

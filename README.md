@@ -61,6 +61,10 @@ use Rack::SlackRequestVerification, {
     # process each request once
     max_staleness_in_secs: 60 * 5,
 
+    # The entire request body must be loaded into memory to compute the hash.
+    # To prevent a DDoS attack, the request body is limited to 1MB
+    request_body_limit_in_bytes: 1024 ** 2,
+
     # Where to log error messages
     logger: Logger.new($stdout),
 

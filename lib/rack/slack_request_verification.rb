@@ -2,8 +2,6 @@ require 'forwardable'
 
 module Rack
   module SlackRequestVerification
-    class Error < StandardError; end
-
     def self.new(app, *args)
       config = Configuration.new(*args)
       Middleware.new(app, config)
@@ -12,6 +10,7 @@ module Rack
 end
 
 require "rack/slack_request_verification/version"
+require "rack/slack_request_verification/errors"
 require "rack/slack_request_verification/middleware"
 require "rack/slack_request_verification/configuration"
 require "rack/slack_request_verification/request"
