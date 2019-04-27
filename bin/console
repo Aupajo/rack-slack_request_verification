@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "rack/slack_request_verification"
+
+require "irb"
+IRB.start(__FILE__)

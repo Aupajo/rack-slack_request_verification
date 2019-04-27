@@ -1,0 +1,63 @@
+# Rack::SlackRequestVerification
+
+Rack middleware to verify Slack requests made using signed secrets.
+
+## Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'rack-slack_request_verification'
+```
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install rack-slack_request_verification
+
+## Usage
+
+Inside your `config.ru`:
+
+```ruby
+# Apply signed request verification to every path starting with "/slack/"
+use Rack::SlackRequestVerification, path: %{^/slack/}
+run MyApp
+```
+
+Will use a `SLACK_SIGNING_KEY` environment variable by default.
+
+You can override this with:
+
+```ruby
+use Rack::SlackRequestVerification, path: %{^/slack/}, signing_key: '...'
+```
+
+A **401 Not Authorized** is returned in the following circumstances:
+
+* When either or both of the `X-Slack-Request-Timestamp' or 'X-Slack-Signature' headers are absent
+* When the timestamp is more than five minutes old (to mitigate replay attacks)
+* When the computed signature of the request does not match the `X-Slack-Signature`
+
+A log message is also generated.
+
+## Development
+
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/Aupajo/rack-slack_request_verification. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+
+## License
+
+The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+
+## Code of Conduct
+
+Everyone interacting in the Rack::SlackRequestVerification project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/Aupajo/rack-slack_request_verification/blob/master/CODE_OF_CONDUCT.md).
