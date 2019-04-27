@@ -2,19 +2,6 @@ require 'rack/test'
 require 'timecop'
 
 RSpec.describe 'Middleware' do
-  include Rack::Test::Methods
-
-  def app
-    @app ||= Rack::Builder.new do
-      use Rack::SlackRequestVerification, {
-        signing_key: 'signing_key',
-        path_pattern: %r{^/slack/}
-      }
-
-      run -> (env) { [200, {}, ['Echo: ', env['rack.input'].read]] }
-    end
-  end
-
   it 'ignores unmatched path patterns' do
     expect(post('/unmatched').status).to be 200
   end
