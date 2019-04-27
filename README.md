@@ -28,12 +28,12 @@ use Rack::SlackRequestVerification, path_pattern: %{^/slack/}
 run MyApp
 ```
 
-Will use a `SLACK_SIGNING_KEY` environment variable by default.
+Will use a `SLACK_SIGNING_SECRET` environment variable by default.
 
 You can override this with:
 
 ```ruby
-use Rack::SlackRequestVerification, path_pattern: %{^/slack/}, signing_key: '...'
+use Rack::SlackRequestVerification, path_pattern: %{^/slack/}, signing_secret: '...'
 ```
 
 A **401 Not Authorized** is returned in the following circumstances:
@@ -51,10 +51,10 @@ use Rack::SlackRequestVerification, {
     # A regular expression used to determine which requests to verify
     path_pattern: %r{^/slack/},
 
-    # You can provide a signing key directly, set a SLACK_SIGNING_KEY env var
-    # or customise the env var to something else
-    signing_key: nil,
-    signing_key_env_var: 'SLACK_SIGNING_KEY',
+    # You can provide a signing secret directly, set a SLACK_SIGNING_SECRET
+    # env var or customise the env var to something else
+    signing_secret: nil,
+    signing_secret_env_var: 'SLACK_SIGNING_SECRET',
 
     # Mitigates replay attacks by verifying the request was sent recently –
     # a better strategy is to record the signature header to ensure you only

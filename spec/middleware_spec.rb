@@ -59,7 +59,7 @@ RSpec.describe 'Middleware' do
 
   it 'allows a request to proceed when the signature can be verified' do
     Timecop.freeze("2019-01-01") do
-      header 'X-Slack-Signature', 'v0=f727f093cf00399e8011cd8bbdccf12db298ae55506e7d10d808d478d1aee0d8'
+      header 'X-Slack-Signature', 'v0=a41fc6d838afffee773c9ff9756a52611eeb57725fc3cddb5518ceecf8d77b57'
       header 'X-Slack-Request-Timestamp', Time.now.to_i
 
       post('/slack/command', 'some-content')

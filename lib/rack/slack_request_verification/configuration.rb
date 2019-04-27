@@ -3,7 +3,7 @@ require 'logger'
 module Rack::SlackRequestVerification
   class Configuration
     attr_reader *%i(
-      signing_key
+      signing_secret
       path_pattern
       signing_version
       timestamp_header
@@ -17,10 +17,10 @@ module Rack::SlackRequestVerification
       # A regular expression used to determine which requests to verify
       path_pattern:,
 
-      # You can provide a signing key directly, set a SLACK_SIGNING_KEY env var
-      # or customise the env var to something else
-      signing_key: nil,
-      signing_key_env_var: 'SLACK_SIGNING_KEY',
+      # You can provide a signing secret directly, set a SLACK_SIGNING_SECRET
+      # env var or customise the env var to something else
+      signing_secret: nil,
+      signing_secret_env_var: 'SLACK_SIGNING_SECRET',
 
       # Mitigates replay attacks by verifying the request was sent recently –
       # a better strategy is to record the signature header to ensure you only
@@ -46,8 +46,8 @@ module Rack::SlackRequestVerification
       @max_staleness_in_secs = max_staleness_in_secs
       @request_body_limit_in_bytes = request_body_limit_in_bytes
 
-      @signing_key = signing_key || ENV.fetch(signing_key_env_var) do
-        fail Error, "#{signing_key_env_var} env var not set, please configure a signing key"
+      @signing_secret = signing_secret || ENV.fetch(signing_secret_env_var) do
+        fail Error, "#{signing_secret_env_var} env var not set, please configure a signing secret"
       end
     end
 

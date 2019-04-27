@@ -4,7 +4,7 @@ require 'forwardable'
 module Rack::SlackRequestVerification
   class ComputedSignature
     extend Forwardable
-    def_delegators :@config, :signing_key, :signing_version
+    def_delegators :@config, :signing_secret, :signing_version
     def_delegators :@request, :body, :timestamp
 
     def initialize(request)
@@ -27,7 +27,7 @@ module Rack::SlackRequestVerification
     end
 
     def digest
-      OpenSSL::HMAC.hexdigest("SHA256", signing_key, signature_base_string)
+      OpenSSL::HMAC.hexdigest("SHA256", signing_secret, signature_base_string)
     end
   end
 end

@@ -8,7 +8,7 @@ module RequestHelpers
   def app
     @app ||= Rack::Builder.new do
       use Rack::SlackRequestVerification, {
-        signing_key: 'signing_key',
+        signing_secret: 'signing_secret',
         path_pattern: %r{^/slack/}
       }
 
