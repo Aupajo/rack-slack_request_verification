@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rack-slack_request_verification (0.1.0)
+    rack-slack_request_verification (1.0.0.pre)
 
 GEM
   remote: https://rubygems.org/
