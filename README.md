@@ -24,7 +24,7 @@ Inside your `config.ru`:
 
 ```ruby
 # Apply signed request verification to every path starting with "/slack/"
-use Rack::SlackRequestVerification, path: %{^/slack/}
+use Rack::SlackRequestVerification, path_pattern: %{^/slack/}
 run MyApp
 ```
 
@@ -33,16 +33,43 @@ Will use a `SLACK_SIGNING_KEY` environment variable by default.
 You can override this with:
 
 ```ruby
-use Rack::SlackRequestVerification, path: %{^/slack/}, signing_key: '...'
+use Rack::SlackRequestVerification, path_pattern: %{^/slack/}, signing_key: '...'
 ```
 
 A **401 Not Authorized** is returned in the following circumstances:
 
-* When either or both of the `X-Slack-Request-Timestamp' or 'X-Slack-Signature' headers are absent
+* When either or both of the `X-Slack-Request-Timestamp` or `X-Slack-Signature` headers are absent
 * When the timestamp is more than five minutes old (to mitigate replay attacks)
 * When the computed signature of the request does not match the `X-Slack-Signature`
 
 A log message is also generated.
+
+### Full options
+
+```ruby
+use Rack::SlackRequestVerification, {
+    # A regular expression used to determine which requests to verify
+    path_pattern: %r{^/slack/},
+
+    # You can provide a signing key directly, set a SLACK_SIGNING_KEY env var
+    # or customise the env var to something else
+    signing_key: nil,
+    signing_key_env_var: 'SLACK_SIGNING_KEY',
+
+    # Mitigates replay attacks by verifying the request was sent recently –
+    # a better strategy is to record the signature header to ensure you only
+    # process each request once
+    max_staleness_in_secs: 60 * 5,
+
+    # Where to log error messages
+    logger: Logger.new($stdout),
+
+    # Settings as currently in use by Slack
+    signing_version: 'v0',
+    timestamp_header: 'X-Slack-Request-Timestamp',
+    signature_header: 'X-Slack-Signature'
+}
+```
 
 ## Development
 
