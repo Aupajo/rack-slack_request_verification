@@ -1,6 +1,6 @@
 require 'logger'
 require 'openssl'
-require 'forwardable'
+require 'delegate'
 
 module Rack::SlackRequestVerification
   class Middleware < SimpleDelegator
