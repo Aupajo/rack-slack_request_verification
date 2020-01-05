@@ -2,7 +2,7 @@ require "bundler/setup"
 require "rack/slack_request_verification"
 require "rack/test"
 
-module RequestHelpers
+module TestHelpers
   include Rack::Test::Methods
 
   def app
@@ -14,6 +14,14 @@ module RequestHelpers
 
       run -> (env) { [200, {}, ['Echo: ', env['rack.input'].read]] }
     end
+  end
+
+  # Freezes time in a way that discards microseconds, to work around a Timecop
+  # issue.
+  def safely_freeze_time(time, &block)
+    parsed_time = Time.parse(time)
+    safe_time = Time.parse(parsed_time.iso8601)
+    Timecop.freeze(safe_time, &block)
   end
 end
 
@@ -28,5 +36,5 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
-  config.include RequestHelpers
+  config.include TestHelpers
 end
