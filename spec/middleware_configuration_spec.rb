@@ -1,9 +1,9 @@
 require 'rack/test'
 
 RSpec.describe 'Middleware configuration' do
-  def configure(*args)
+  def configure(**args)
     mock_app = double(:app)
-    Rack::SlackRequestVerification.new(mock_app, *args)
+    Rack::SlackRequestVerification.new(mock_app, **args)
   end
 
   around do |example|
