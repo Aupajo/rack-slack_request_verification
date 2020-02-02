@@ -2,8 +2,8 @@ require 'forwardable'
 
 module Rack
   module SlackRequestVerification
-    def self.new(app, *args)
-      config = Configuration.new(*args)
+    def self.new(app, *args, **kwargs)
+      config = Configuration.new(*args, **kwargs)
       Middleware.new(app, config)
     end
   end
